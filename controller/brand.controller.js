@@ -31,7 +31,7 @@ exports.addAllBrand = async (req,res,next) => {
 // get active Brand
 exports.getAllBrands = async (req,res,next) => {
   try {
-    const result = await Brand.find({},{name:1,email:1,logo:1,website:1,location:1});
+    const result = await Brand.find({},{name:1,description:1,status:1});
     res.status(200).json({
       success:true,
       result,

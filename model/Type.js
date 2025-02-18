@@ -1,11 +1,11 @@
 const mongoose = require("mongoose");
 const { ObjectId } = mongoose.Schema.Types;
 
-const brandSchema = mongoose.Schema({
+const typeSchema = mongoose.Schema({
   name: {
     type: String,
     trim: true,
-    required: [true, "Please provide a brand name"],
+    required: [true, "Please provide a product type name"],
     maxLength: 100,
     unique: true,
   },
@@ -23,9 +23,9 @@ const brandSchema = mongoose.Schema({
   timestamps: true
 });
 
-const Brand = mongoose.model("Brand", brandSchema);
+const Type = mongoose.model("Type", typeSchema);
 
-module.exports = Brand;
+module.exports = Type;
 
 
 

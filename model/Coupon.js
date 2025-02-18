@@ -6,17 +6,9 @@ const couponSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    logo: {
-      type: String,
-      required: true,
-    },
     couponCode: {
       type: String,
       required: true,
-    },
-    startTime: {
-      type: Date,
-      required: false
     },
     endTime: {
       type: Date,
@@ -28,10 +20,6 @@ const couponSchema = new mongoose.Schema(
     },
     minimumAmount: {
       type: Number,
-      required: true,
-    },
-    productType: {
-      type: String,
       required: true,
     },
     status: {

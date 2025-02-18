@@ -1,5 +1,5 @@
 const ApiError = require('../errors/api-error');
-const Brand = require('../model/Brand');
+const Brand = require('../model/Type');
 
 // addBrandService
 module.exports.addBrandService = async (data) => {
