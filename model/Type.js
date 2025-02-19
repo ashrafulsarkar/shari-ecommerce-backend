@@ -10,11 +10,6 @@ const typeSchema = mongoose.Schema({
     unique: true,
   },
   description: String,
-  status: {
-    type: String,
-    enum: ["active", "inactive"],
-    default: "active"
-  },
   products: [{
     type: ObjectId,
     ref: "Products"
