@@ -1,14 +1,20 @@
 const Brand = require("../model/Brand");
+const Type = require("../model/Type");
 const Category = require("../model/Category");
 const Product = require("../model/Products");
 
 // create product service
 exports.createProductService = async (data) => {
   const product = await Product.create(data);
-  const { _id: productId, brand, category } = product;
+  const { _id: productId, brand, type, category } = product;
   //update Brand
   await Brand.updateOne(
     { _id: brand.id },
+    { $push: { products: productId } }
+  );
+  //update type
+  await Type.updateOne(
+    { _id: type.id },
     { $push: { products: productId } }
   );
   //Category Brand
@@ -25,6 +31,9 @@ exports.addAllProductService = async (data) => {
   const products = await Product.insertMany(data);
   for (const product of products) {
     await Brand.findByIdAndUpdate(product.brand.id, {
+      $push: { products: product._id },
+    });
+    await Type.findByIdAndUpdate(product.type.id, {
       $push: { products: product._id },
     });
     await Category.findByIdAndUpdate(product.category.id, {
@@ -135,12 +144,14 @@ exports.updateProductService = async (id, currProduct) => {
     product.title = currProduct.title;
     product.brand.name = currProduct.brand.name;
     product.brand.id = currProduct.brand.id;
+    product.type.name = currProduct.type.name;
+    product.type.id = currProduct.type.id;
     product.category.name = currProduct.category.name;
     product.category.id = currProduct.category.id;
     product.sku = currProduct.sku;
     product.img = currProduct.img;
     product.slug = currProduct.slug;
-    product.unit = currProduct.unit;
+    product.sizes = currProduct.sizes;
     product.imageURLs = currProduct.imageURLs;
     product.tags = currProduct.tags;
     product.parent = currProduct.parent;

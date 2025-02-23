@@ -4,15 +4,6 @@ const { ObjectId } = mongoose.Schema.Types;
 const validator = require("validator");
 
 const productsSchema = mongoose.Schema({
-  sku: {
-    type: String,
-    required: false,
-  },
-  img:{
-    type: String,
-    required: true,
-    validate: [validator.isURL, "Please provide valid url(s)"]
-  },
   title: {
     type: String,
     required: [true, "Please provide a name for this product."],
@@ -25,9 +16,14 @@ const productsSchema = mongoose.Schema({
     trim: true,
     required: false,
   },
-  unit: {
+  description: {
+    type: String,
+    required: true
+  },
+  img:{
     type: String,
     required: true,
+    validate: [validator.isURL, "Please provide valid url(s)"]
   },
   imageURLs: [{
     color:{
@@ -53,7 +49,7 @@ const productsSchema = mongoose.Schema({
     type:String,
     required:true,
     trim:true,
-   },
+  },
   children:{
     type:String,
     required:true,
@@ -84,6 +80,17 @@ const productsSchema = mongoose.Schema({
       required: true,
     }
   },
+  type:{
+    name: {
+      type: String,
+      required: true,
+    },
+    id: {
+      type: ObjectId,
+      ref: "Type",
+      required: true,
+    }
+  },
   category: {
     name: {
       type: String,
@@ -95,6 +102,14 @@ const productsSchema = mongoose.Schema({
       required: true,
     }
   },
+  sku: {
+    type: String,
+    required: false,
+  },
+  count: {
+    type: String,
+    required: false,
+  },
   status: {
     type: String,
     required: true,
@@ -105,30 +120,8 @@ const productsSchema = mongoose.Schema({
     default: "in-stock",
   },
   reviews: [{type:ObjectId, ref: 'Reviews' }],
-  productType:{
-    type:String,
-    required: true,
-    lowercase: true,
-  },
-  description: {
-    type: String,
-    required: true
-  },
-  videoId: {
-    type: String,
-    required: false
-  },
   additionalInformation: [{}],
   tags: [String],
-  sizes: [String],
-  offerDate:{
-    startDate:{
-      type:Date
-    },
-    endDate:{
-      type:Date
-    },
-  },
   featured: {
     type: Boolean,
     default: false,

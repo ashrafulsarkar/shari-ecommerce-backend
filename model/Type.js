@@ -21,7 +21,3 @@ const typeSchema = mongoose.Schema({
 const Type = mongoose.model("Type", typeSchema);
 
 module.exports = Type;
-
-
-
-
