@@ -18,7 +18,7 @@ router.get('/review-product', productController.reviewProducts);
 // get popular products by type
 router.get('/popular/:type', productController.getPopularProductByType);
 // get Related Products
-router.get('/related-product/:id', productController.getRelatedProducts);
+router.get('/related-blog/:id', productController.getRelatedProducts);
 // get Single Product
 router.get("/single-product/:id", productController.getSingleProduct);
 // stock Product

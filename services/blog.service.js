@@ -1,5 +1,3 @@
-const Brand = require("../model/Brand");
-const Type = require("../model/Type");
 const Category = require("../model/Category");
 const Product = require("../model/Products");
 
