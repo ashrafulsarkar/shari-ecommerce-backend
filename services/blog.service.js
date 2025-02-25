@@ -1,198 +1,74 @@
 const Category = require("../model/Category");
-const Product = require("../model/Products");
+const Blog = require("../model/Blogs");
 
-// create product service
-exports.createProductService = async (data) => {
-  const product = await Product.create(data);
-  const { _id: productId, brand, type, category } = product;
-  //update Brand
-  await Brand.updateOne(
-    { _id: brand.id },
-    { $push: { products: productId } }
-  );
-  //update type
-  await Type.updateOne(
-    { _id: type.id },
-    { $push: { products: productId } }
-  );
+// create blog service
+exports.createBlogService = async (data) => {
+  const blog = await Blog.create(data);
+  const { _id: blogId, category } = blog;
+  
   //Category Brand
   await Category.updateOne(
     { _id: category.id },
-    { $push: { products: productId } }
+    { $push: { blogs: blogId } }
   );
-  return product;
+  return blog;
 };
 
-// create all product service
-exports.addAllProductService = async (data) => {
-  await Product.deleteMany();
-  const products = await Product.insertMany(data);
-  for (const product of products) {
-    await Brand.findByIdAndUpdate(product.brand.id, {
-      $push: { products: product._id },
-    });
-    await Type.findByIdAndUpdate(product.type.id, {
-      $push: { products: product._id },
-    });
-    await Category.findByIdAndUpdate(product.category.id, {
-      $push: { products: product._id },
+// create all blog service
+exports.addAllBlogService = async (data) => {
+  await Blog.deleteMany();
+  const blogs = await Blog.insertMany(data);
+  for (const blog of blogs) {
+    await Category.findByIdAndUpdate(blog.category.id, {
+      $push: { blogs: blog._id },
     });
   }
-  return products;
+  return blogs;
 };
 
-// get product data
-exports.getAllProductsService = async () => {
-  const products = await Product.find({}).populate("reviews");
-  return products;
-};
 
-// get type of product service
-exports.getProductTypeService = async (req) => {
-  const type = req.params.type;
-  const query = req.query;
-  let products;
-  if (query.new === "true") {
-    products = await Product.find({ productType: type })
-      .sort({ createdAt: -1 })
-      .limit(8)
-      .populate("reviews");
-  } else if (query.featured === "true") {
-    products = await Product.find({
-      productType: type,
-      featured: true,
-    }).populate("reviews");
-  } else if (query.topSellers === "true") {
-    products = await Product.find({ productType: type })
-      .sort({ sellCount: -1 })
-      .limit(8)
-      .populate("reviews");
-  } else {
-    products = await Product.find({ productType: type }).populate("reviews");
-  }
-  return products;
-};
-
-// get offer product service
-exports.getOfferTimerProductService = async (query) => {
-  const products = await Product.find({
-    productType: query,
-    "offerDate.endDate": { $gt: new Date() },
-  }).populate("reviews");
-  return products;
-};
-
-// get popular product service by type
-exports.getPopularProductServiceByType = async (type) => {
-  const products = await Product.find({ productType: type })
-    .sort({ "reviews.length": -1 })
-    .limit(8)
-    .populate("reviews");
-  return products;
-};
-
-exports.getTopRatedProductService = async () => {
-  const products = await Product.find({
-    reviews: { $exists: true, $ne: [] },
-  }).populate("reviews");
-
-  const topRatedProducts = products.map((product) => {
-    const totalRating = product.reviews.reduce(
-      (sum, review) => sum + review.rating,
-      0
-    );
-    const averageRating = totalRating / product.reviews.length;
-
-    return {
-      ...product.toObject(),
-      rating: averageRating,
-    };
-  });
-
-  topRatedProducts.sort((a, b) => b.rating - a.rating);
-
-  return topRatedProducts;
-};
-
-// get product data
-exports.getProductService = async (id) => {
-  const product = await Product.findById(id).populate({
+// get blog data
+exports.getBlogService = async (id) => {
+  const blog = await Blog.findById(id).populate({
     path: "reviews",
     populate: { path: "userId", select: "name email imageURL" },
   });
-  return product;
+  return blog;
 };
 
-// get product data
-exports.getRelatedProductService = async (productId) => {
-  const currentProduct = await Product.findById(productId);
+// get blog data
+exports.getRelatedBlogService = async (blogId) => {
+  const currentBlog = await Blog.findById(blogId);
 
-  const relatedProducts = await Product.find({
-    "category.name": currentProduct.category.name,
-    _id: { $ne: productId }, // Exclude the current product ID
+  const relatedBlogs = await Blog.find({
+    "category.name": currentBlog.category.name,
+    _id: { $ne: blogId }, // Exclude the current blog ID
   });
-  return relatedProducts;
+  return relatedBlogs;
 };
 
-// update a product
-exports.updateProductService = async (id, currProduct) => {
-  // console.log('currProduct',currProduct)
-  const product = await Product.findById(id);
-  if (product) {
-    product.title = currProduct.title;
-    product.brand.name = currProduct.brand.name;
-    product.brand.id = currProduct.brand.id;
-    product.type.name = currProduct.type.name;
-    product.type.id = currProduct.type.id;
-    product.category.name = currProduct.category.name;
-    product.category.id = currProduct.category.id;
-    product.sku = currProduct.sku;
-    product.img = currProduct.img;
-    product.slug = currProduct.slug;
-    product.sizes = currProduct.sizes;
-    product.imageURLs = currProduct.imageURLs;
-    product.tags = currProduct.tags;
-    product.parent = currProduct.parent;
-    product.children = currProduct.children;
-    product.price = currProduct.price;
-    product.discount = currProduct.discount;
-    product.quantity = currProduct.quantity;
-    product.status = currProduct.status;
-    product.productType = currProduct.productType;
-    product.description = currProduct.description;
-    product.additionalInformation = currProduct.additionalInformation;
+// update a blog
+exports.updateBlogService = async (id, currBlog) => {
+  // console.log('currBlog',currBlog)
+  const blog = await Blog.findById(id);
+  if (blog) {
+    blog.title = currBlog.title;
+    blog.slug = currBlog.slug;
+    blog.img = currBlog.img;
+    blog.description = currBlog.description;
+    blog.category.name = currBlog.category.name;
+    blog.category.id = currBlog.category.id;
+    blog.tags = currBlog.tags;
 
-    await product.save();
+    await blog.save();
   }
 
-  return product;
+  return blog;
 };
 
 
-
-// get Reviews Products
-exports.getReviewsProducts = async () => {
-  const result = await Product.find({
-    reviews: { $exists: true, $ne: [] },
-  })
-    .populate({
-      path: "reviews",
-      populate: { path: "userId", select: "name email imageURL" },
-    });
-
-  const products = result.filter(p => p.reviews.length > 0)
-
-  return products;
-};
-
-// get Reviews Products
-exports.getStockOutProducts = async () => {
-  const result = await Product.find({ status: "out-of-stock" }).sort({ createdAt: -1 })
-  return result;
-};
-
-// get Reviews Products
-exports.deleteProduct = async (id) => {
-  const result = await Product.findByIdAndDelete(id)
+// delete Blogs
+exports.deleteBlog = async (id) => {
+  const result = await Blog.findByIdAndDelete(id)
   return result;
 };
