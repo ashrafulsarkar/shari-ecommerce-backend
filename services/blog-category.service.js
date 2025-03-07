@@ -1,27 +1,27 @@
 const ApiError = require('../errors/api-error');
-const Category = require('../model/BlogCategory');
+const BlogCategory = require('../model/BlogCategory');
 const Blogs = require('../model/Blogs');
 
 // create category service
 exports.createCategoryService = async (data) => {
-  const category = await Category.create(data);
+  const category = await BlogCategory.create(data);
   return category;
 }
 
 // create all category service
 exports.addAllCategoryService = async (data) => {
-  await Category.deleteMany()
-  const category = await Category.insertMany(data);
+  await BlogCategory.deleteMany()
+  const category = await BlogCategory.insertMany(data);
   return category;
 }
 
 // get all show category service
 exports.getShowCategoryServices = async () => {
-  const category = await Category.find({status:'Show'}).populate('blogs');
+  const category = await BlogCategory.find({status:'Show'}).populate('blogs');
   return category;
 }
 
-// get all category 
+// get all category
 exports.getAllCategoryServices = async () => {
   const category = await Category.find({})
   return category;

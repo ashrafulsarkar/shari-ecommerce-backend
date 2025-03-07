@@ -1,93 +1,55 @@
-const categoryServices = require("../services/blog-category.service");
+const BlogCategory = require("../model/BlogCategory");
 
+// Create a Category
+exports.createCategory = async (req, res) => {
+    try {
+        const category = new BlogCategory(req.body);
+        await category.save();
+        res.status(201).json(category);
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+};
 
-// add category
-exports.addCategory = async (req,res,next) => {
-  try {
-    const result = await categoryServices.createCategoryService(req.body);
-    res.status(200).json({
-      status: "success",
-      message: "Category created successfully!",
-      data: result,
-    });
-  } catch (error) {
-    console.log(error)
-    next(error)
-  }
-}
+// Get All Categories
+exports.getAllCategories = async (req, res) => {
+    try {
+        const categories = await BlogCategory.find();
+        res.status(200).json(categories);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
 
-// add all category
-exports.addAllCategory = async (req,res,next) => {
-  try {
-    const result = await categoryServices.addAllCategoryService(req.body);
-    res.json({
-      message:'Category added successfully',
-      result,
-    })
-  } catch (error) {
-    next(error)
-  }
-}
+// Get Single Category by ID
+exports.getCategoryById = async (req, res) => {
+    try {
+        const category = await BlogCategory.findById(req.params.id);
+        if (!category) return res.status(404).json({ error: 'Category not found' });
+        res.status(200).json(category);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
 
-// add all category
-exports.getShowCategory = async (req,res,next) => {
-  try {
-    const result = await categoryServices.getShowCategoryServices();
-    res.status(200).json({
-      success:true,
-      result,
-    })
-  } catch (error) {
-    next(error)
-  }
-}
+// Update a Category
+exports.updateCategory = async (req, res) => {
+    try {
+        const category = await BlogCategory.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true });
+        if (!category) return res.status(404).json({ error: 'Category not found' });
+        res.status(200).json(category);
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+};
 
-// add all category
-exports.getAllCategory = async (req,res,next) => {
-  try {
-    const result = await categoryServices.getAllCategoryServices();
-    res.status(200).json({
-      success:true,
-      result,
-    })
-  } catch (error) {
-    next(error)
-  }
-}
-
-// delete category
-exports.deleteCategory = async (req,res,next) => {
-  try {
-    const result = await categoryServices.deleteCategoryService(req.params.id);
-    res.status(200).json({
-      success:true,
-      result,
-    })
-  } catch (error) {
-    next(error)
-  }
-}
-
-// update category
-exports.updateCategory = async (req,res,next) => {
-  try {
-    const result = await categoryServices.updateCategoryService(req.params.id,req.body);
-    res.status(200).json({
-      status:'success',
-      message:'Category update successfully',
-      result,
-    })
-  } catch (error) {
-    next(error)
-  }
-}
-
-// get single category
-exports.getSingleCategory = async (req,res,next) => {
-  try {
-    const result = await categoryServices.getSingleCategoryService(req.params.id);
-    res.status(200).json(result)
-  } catch (error) {
-    next(error)
-  }
-}
+// Delete a Category
+exports.deleteCategory = async (req, res) => {
+    try {
+        const category = await BlogCategory.findByIdAndDelete(req.params.id);
+        if (!category) return res.status(404).json({ error: 'Category not found' });
+        res.status(200).json({ message: 'Category deleted successfully' });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};

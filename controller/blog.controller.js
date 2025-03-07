@@ -1,99 +1,55 @@
-const blogServices = require("../services/blog.service");
-const Blog = require("../model/Blogs");
+const Blog = require("../model/Blog");
 
-
-// add blog
-exports.addBlog = async (req, res,next) => {
-  console.log('blog--->',req.body);
-  try {
-    const result = await blogServices.createBlogService({
-      ...req.body,
-    });
-
-    console.log('blog-result',result)
- 
-    res.status(200).json({
-      success:true,
-      status: "success",
-      message: "Blog created successfully!",
-      data: result,
-    });
-  } catch (error) {
-    console.log(error);
-    next(error)
-  }
+// Create a Category
+exports.createBlog = async (req, res) => {
+    try {
+        const blog = new Blog(req.body);
+        await blog.save();
+        res.status(201).json(blog);
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
 };
 
-
-// add all blog
-module.exports.addAllBlogs = async (req,res,next) => {
-  try {
-    const result = await blogServices.addAllBlogService(req.body);
-    res.json({
-      message:'Blogs added successfully',
-      result,
-    })
-  } catch (error) {
-    next(error)
-  }
-}
-
-// get all blogs
-exports.getAllBlogs = async (req,res,next) => {
-  try {
-    const result = await blogServices.getAllBlogsService();
-    res.status(200).json({
-      success:true,
-      data:result,
-    })
-  } catch (error) {
-    next(error)
-  }
-}
-
-// getSingleBlog
-exports.getSingleBlog = async (req,res,next) => {
-  try {
-    const blog = await blogServices.getBlogService(req.params.id)
-    res.json(blog)
-  } catch (error) {
-    next(error)
-  }
-}
-
-// get Related blog
-exports.getRelatedBlogs = async (req,res,next) => {
-  try {
-    const blogs = await blogServices.getRelatedBlogService(req.params.id)
-    res.status(200).json({
-      success:true, 
-      data:blogs,
-    })
-  } catch (error) {
-    next(error)
-  }
-}
-
-// update Blog
-exports.updateBlog = async (req, res,next) => {
-  try {
-    const blog = await blogServices.updateBlogService(req.params.id,req.body)
-    res.send({ data: blog, message: "Blog updated successfully!" });
-  } catch (error) {
-    next(error)
-  }
+// Get All Categories
+exports.getAllBlogs = async (req, res) => {
+    try {
+        const blogs = await Blog.find();
+        res.status(200).json(blogs);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
 };
 
+// Get Single Category by ID
+exports.getBlogById = async (req, res) => {
+    try {
+        const blog = await Blog.findById(req.params.id);
+        if (!blog) return res.status(404).json({ error: 'Blog not found' });
+        res.status(200).json(blog);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
 
+// Update a blog
+exports.updateBlog = async (req, res) => {
+    try {
+        const blog = await Blog.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true });
+        if (!blog) return res.status(404).json({ error: 'Blog not found' });
+        res.status(200).json(blog);
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+};
 
-// update Blog
-exports.deleteBlog = async (req, res,next) => {
-  try {
-    await blogServices.deleteBlog(req.params.id);
-    res.status(200).json({
-      message:'Blog delete successfully'
-    })
-  } catch (error) {
-    next(error)
-  }
+// Delete a blog
+exports.deleteBlog = async (req, res) => {
+    try {
+        const blog = await Blog.findByIdAndDelete(req.params.id);
+        if (!blog) return res.status(404).json({ error: 'Blog not found' });
+        res.status(200).json({ message: 'Blog deleted successfully' });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
 };

@@ -4,18 +4,10 @@ const router = express.Router();
 const categoryController = require('../controller/blog-category.controller');
 
 // get
-router.get('/get/:id', categoryController.getSingleCategory);
-// add
-router.post('/add', categoryController.addCategory);
-// add All Category
-router.post('/add-all', categoryController.addAllCategory);
-// get all Category
-router.get('/all', categoryController.getAllCategory);
-// get Show Category
-router.get('/show', categoryController.getShowCategory);
-// delete category
-router.delete('/delete/:id', categoryController.deleteCategory);
-// delete product
-router.patch('/edit/:id', categoryController.updateCategory);
+router.post('/categories', categoryController.createCategory);
+router.get('/categories', categoryController.getAllCategories);
+router.get('/categories/:id', categoryController.getCategoryById);
+router.put('/categories/:id', categoryController.updateCategory);
+router.delete('/categories/:id', categoryController.deleteCategory);
 
 module.exports = router;

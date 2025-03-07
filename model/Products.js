@@ -83,12 +83,12 @@ const productsSchema = mongoose.Schema({
   type:{
     name: {
       type: String,
-      required: true,
+      required: false,
     },
     id: {
       type: ObjectId,
       ref: "Type",
-      required: true,
+      required: false,
     }
   },
   category: {
