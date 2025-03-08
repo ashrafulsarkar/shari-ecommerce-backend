@@ -26,6 +26,7 @@ const customerRoutes = require("./routes/customer.routes");
 const adminRoutes = require("./routes/admin.routes");
 // const uploadRouter = require('./routes/uploadFile.routes');
 const cloudinaryRoutes = require("./routes/cloudinary.routes");
+const albumRoutes = require("./routes/album.routes");
 
 // middleware
 app.use(timeout('300s'));
@@ -56,6 +57,7 @@ app.use("/api/blog", blogCategoryRoutes);
 // blog post
 app.use("/api/blog_post", blogPostRoutes);
 app.use("/api/customer", customerRoutes);
+app.use("/api/album", albumRoutes);
 
 
 // root route
