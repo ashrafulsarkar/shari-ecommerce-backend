@@ -5,6 +5,7 @@ const {
   getOrders,
   updateOrderStatus,
   getSingleOrder,
+  orderReport,
 } = require("../controller/order.controller");
 
 // router
@@ -20,5 +21,8 @@ router.post("/create-payment-intent", paymentIntent);
 router.post("/saveOrder", addOrder);
 // update status
 router.patch("/update-status/:id", updateOrderStatus);
+
+// orderReport
+router.get("/order/report", orderReport);
 
 module.exports = router;

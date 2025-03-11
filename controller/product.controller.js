@@ -21,7 +21,7 @@ exports.addProduct = async (req, res,next) => {
     });
 
     console.log('product-result',result)
- 
+
     res.status(200).json({
       success:true,
       status: "success",
@@ -66,7 +66,7 @@ module.exports.getProductsByType = async (req,res,next) => {
   try {
     const result = await productServices.getProductTypeService(req);
     res.status(200).json({
-      success:true, 
+      success:true,
       data:result,
     })
   } catch (error) {
@@ -80,7 +80,7 @@ module.exports.getOfferTimerProducts = async (req,res,next) => {
   try {
     const result = await productServices.getOfferTimerProductService(req.query.type);
     res.status(200).json({
-      success:true, 
+      success:true,
       data:result,
     })
   } catch (error) {
@@ -91,9 +91,11 @@ module.exports.getOfferTimerProducts = async (req,res,next) => {
 // get Popular Product By Type
 module.exports.getPopularProductByType = async (req,res,next) => {
   try {
+
+    console.log(req.params)
     const result = await productServices.getPopularProductServiceByType(req.params.type);
     res.status(200).json({
-      success:true, 
+      success:true,
       data:result,
     })
   } catch (error) {
@@ -106,7 +108,7 @@ module.exports.getTopRatedProducts = async (req,res,next) => {
   try {
     const result = await productServices.getTopRatedProductService();
     res.status(200).json({
-      success:true, 
+      success:true,
       data:result,
     })
   } catch (error) {
@@ -129,7 +131,7 @@ exports.getRelatedProducts = async (req,res,next) => {
   try {
     const products = await productServices.getRelatedProductService(req.params.id)
     res.status(200).json({
-      success:true, 
+      success:true,
       data:products,
     })
   } catch (error) {
@@ -152,7 +154,7 @@ exports.reviewProducts = async (req, res,next) => {
   try {
     const products = await productServices.getReviewsProducts()
     res.status(200).json({
-      success:true, 
+      success:true,
       data:products,
     })
   } catch (error) {
@@ -165,7 +167,7 @@ exports.stockOutProducts = async (req, res,next) => {
   try {
     const products = await productServices.getStockOutProducts();
     res.status(200).json({
-      success:true, 
+      success:true,
       data:products,
     })
   } catch (error) {

@@ -2,6 +2,8 @@ const Brand = require("../model/Brand");
 const Type = require("../model/Type");
 const Category = require("../model/Category");
 const Product = require("../model/Products");
+const BusinessSetting = require("../model/BusinessSetting");
+const { default: mongoose } = require("mongoose");
 
 // create product service
 exports.createProductService = async (data) => {
@@ -86,11 +88,35 @@ exports.getOfferTimerProductService = async (query) => {
 
 // get popular product service by type
 exports.getPopularProductServiceByType = async (type) => {
-  const products = await Product.find({ productType: type })
+  let get_type;
+  if(type==='popular'){
+     get_type = await BusinessSetting.findOne({
+      key:'popular_type'
+    })
+  }
+
+  if(type==='typeTopSeller'){
+    get_type = await BusinessSetting.findOne({
+     key:'typeTopSeller'
+   })
+ }
+
+ if(type==='typeFeatureProduct'){
+  get_type = await BusinessSetting.findOne({
+   key:'typeFeatureProduct'
+ })
+}
+
+  if(get_type){
+    const products = await Product.find({ "type.id": new mongoose.Types.ObjectId(get_type.value.id)  })
     .sort({ "reviews.length": -1 })
     .limit(8)
-    .populate("reviews");
+     .select('-description -additionalInformation -reviews -imageURLs  ');
   return products;
+  }else{
+    return []
+  }
+
 };
 
 exports.getTopRatedProductService = async () => {

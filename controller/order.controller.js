@@ -86,3 +86,36 @@ exports.updateOrderStatus = async (req, res) => {
     next(error)
   }
 };
+
+
+// report generate
+exports.orderReport = async(req,res,next)=>{
+
+  try {
+    let { startDate, endDate } = req.query;
+
+    // Validate and parse dates
+    if (!startDate || !endDate) {
+      return res.status(400).json({ message: "Start date and end date are required" });
+    }
+
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+
+    // Ensure end date includes the whole day
+    end.setHours(23, 59, 59, 999);
+
+    // Query orders in date range
+    const orders = await Order.find({
+      createdAt: {
+        $gte: start,
+        $lte: end,
+      },
+    }).sort({ createdAt: -1 });
+
+    res.json(orders);
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error });
+  }
+}
+
