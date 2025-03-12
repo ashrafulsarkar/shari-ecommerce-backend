@@ -1,8 +1,10 @@
+const { default: slugify } = require("slugify");
 const BlogCategory = require("../model/BlogCategory");
 
 // Create a Category
 exports.createCategory = async (req, res) => {
     try {
+        req.body.slug = slugify(req.body.name, { lower: true });
         const category = new BlogCategory(req.body);
         await category.save();
         res.status(201).json(category);
@@ -35,6 +37,7 @@ exports.getCategoryById = async (req, res) => {
 // Update a Category
 exports.updateCategory = async (req, res) => {
     try {
+        req.body.slug = slugify(req.body.name, { lower: true });
         const category = await BlogCategory.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true });
         if (!category) return res.status(404).json({ error: 'Category not found' });
         res.status(200).json(category);

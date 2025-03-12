@@ -16,6 +16,10 @@ const adminSchema = new mongoose.Schema(
       type: String,
       required: false,
     },
+    bio: {
+      type: String,
+      required: false,
+    },
     country: {
       type: String,
       required: false,
@@ -64,7 +68,7 @@ const adminSchema = new mongoose.Schema(
     confirmationTokenExpires: Date,
   },
   {
-    timestamps: true, 
+    timestamps: true,
   }
 );
 
