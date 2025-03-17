@@ -1,6 +1,6 @@
 const express = require("express");
 const BusinessSetting = require("../model/BusinessSetting");
-const { getAllSettings, saveSettings } = require("../lib/helper");
+const { getAllSettings, saveSettings, getSetting } = require("../lib/helper");
 const router = express.Router();
 
 // ✅ 1. Save or Update a Setting
@@ -68,6 +68,23 @@ router.delete("/:key", async (req, res) => {
       return res.status(404).json({ message: "Setting not found" });
     }
     res.status(200).json({ message: "Setting deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error });
+  }
+});
+
+
+// front end
+// ✅ 3. Get All Settings
+router.get("/front_end/shipping_info", async (req, res) => {
+  try {
+    const settings = {
+      inside_dhaka:await getSetting('inside_dhaka'),
+      inside_dhaka_type:"inside_dhaka_type",
+      outside_dhaka:await getSetting('outside_dhaka'),
+      outside_dhaka_type:"outside_dhaka_type",
+    }
+    res.status(200).json(settings);
   } catch (error) {
     res.status(500).json({ message: "Server error", error });
   }

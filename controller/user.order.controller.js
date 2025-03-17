@@ -271,7 +271,7 @@ exports.getDashboardRecentOrder = async (req, res,next) => {
 
     const orders = await Order.aggregate([
       { $match: queryObject },
-      { $sort: { updatedAt: -1 } },
+      { $sort: { createdAt: -1 } },
       {
         $project: {
           invoice: 1,
@@ -281,6 +281,7 @@ exports.getDashboardRecentOrder = async (req, res,next) => {
           name: 1,
           user: 1,
           totalAmount: 1,
+          payment_status: 1,
           status:1,
         },
       },

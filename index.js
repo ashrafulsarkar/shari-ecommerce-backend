@@ -1,5 +1,7 @@
 require("dotenv").config();
 const express = require("express");
+const SSLCommerzPayment = require('sslcommerz-lts')
+const bodyParser = require('body-parser')
 const timeout = require('connect-timeout');
 const app = express();
 const path = require('path');
@@ -29,11 +31,17 @@ const cloudinaryRoutes = require("./routes/cloudinary.routes");
 const albumRoutes = require("./routes/album.routes");
 const businessSettingRoutes = require("./routes/businessSetting.routes");
 const commentRoutes = require("./routes/Comment.routes");
+const SSLCommerzeRoutes = require("./routes/SSLCommerze.routes");
 
 // middleware
 app.use(timeout('300s'));
 app.use(cors());
-app.use(express.json());
+// app.use(express.json());
+// parse application/x-www-form-urlencoded
+app.use(bodyParser.urlencoded({ extended: false }))
+
+// parse application/json
+app.use(bodyParser.json());
 app.use(morgan('dev'));
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -60,13 +68,10 @@ app.use("/api/blog", blogCategoryRoutes);
 app.use("/api/blog_post", blogPostRoutes);
 app.use("/api/customer", customerRoutes);
 app.use("/api/album", albumRoutes);
-app.use("/api/album", albumRoutes);
 app.use("/api/business_setting", businessSettingRoutes);
 app.use("/api/comment", commentRoutes);
+app.use("/api/sslcommerze", SSLCommerzeRoutes);
 
-
-// root route
-app.get("/", (req, res) => res.send("Apps worked successfully"));
 
 app.listen(PORT, () => console.log(`server running on port ${PORT}`));
 

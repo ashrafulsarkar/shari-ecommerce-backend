@@ -70,6 +70,16 @@ const orderSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    payment_status: {
+      type: String,
+      required: false,
+      default: "UnPaid",
+    },
+    transactionId: {
+      type: String,
+      required: false,
+      default: "",
+    },
     orderNote: {
       type: String,
       required: false,
