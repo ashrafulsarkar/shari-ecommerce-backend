@@ -126,6 +126,14 @@ const productsSchema = mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  ja: {
+    type: Boolean,
+    default: false,
+  },
+  lee: {
+    type: Boolean,
+    default: false,
+  },
   sellCount: {
     type: Number,
     default: 0,
