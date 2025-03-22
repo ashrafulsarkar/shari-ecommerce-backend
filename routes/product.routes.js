@@ -27,7 +27,8 @@ router.get("/stock-out", productController.stockOutProducts);
 router.patch("/edit-product/:id", productController.updateProduct);
 // get Products ByType
 router.get('/:type', productController.getProductsByType);
-// get Products ByType 
+// get Products ByType
 router.delete('/:id', productController.deleteProduct);
+router.put('/product_status/ja/lee/:id', productController.product_ja_lee);
 
 module.exports = router;

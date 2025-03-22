@@ -1,6 +1,7 @@
 const Brand = require("../model/Brand");
 const productServices = require("../services/product.service");
 const Product = require("../model/Products");
+const Products = require("../model/Products");
 
 
 // add product
@@ -92,7 +93,6 @@ module.exports.getOfferTimerProducts = async (req,res,next) => {
 module.exports.getPopularProductByType = async (req,res,next) => {
   try {
 
-    console.log(req.params)
     const result = await productServices.getPopularProductServiceByType(req.params.type);
     res.status(200).json({
       success:true,
@@ -186,4 +186,26 @@ exports.deleteProduct = async (req, res,next) => {
     next(error)
   }
 };
+exports.product_ja_lee = async (req, res,next) => {
+  try {
+
+    const product = await Products.findById(req.params.id)
+    console.log(req.body)
+    if(req.body.type==='ja'){
+      product.ja=req.body.status
+    }
+    if(req.body.type==='lee'){
+      product.lee=req.body.status
+    }
+    product.save();
+
+    res.status(200).json({
+      message:'Product brand update successfully'
+    })
+  } catch (error) {
+    next(error)
+  }
+};
+
+
 

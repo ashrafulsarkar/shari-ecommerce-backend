@@ -107,6 +107,22 @@ exports.getPopularProductServiceByType = async (type) => {
  })
 }
 
+if(type==='ja'){
+  const products = await Product.find({ ja:true })
+    .sort({ "reviews.length": -1 })
+    .limit(100)
+     .select('-description -additionalInformation -reviews -imageURLs  ');
+  return products;
+}
+if(type==='lee'){
+  const products = await Product.find({ lee:true })
+    .sort({ "reviews.length": -1 })
+    .limit(100)
+     .select('-description -additionalInformation -reviews -imageURLs  ');
+  return products;
+}
+
+
   if(get_type){
     const products = await Product.find({ "type.id": new mongoose.Types.ObjectId(get_type.value.id)  })
     .sort({ "reviews.length": -1 })
