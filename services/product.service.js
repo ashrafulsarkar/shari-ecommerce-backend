@@ -89,47 +89,63 @@ exports.getOfferTimerProductService = async (query) => {
 // get popular product service by type
 exports.getPopularProductServiceByType = async (type) => {
   let get_type;
-  if(type==='popular'){
-     get_type = await BusinessSetting.findOne({
-      key:'popular_type'
+
+  // jo
+  if (type === 'popular') {
+    get_type = await BusinessSetting.findOne({
+      key: 'popular_type'
+    })
+  }
+// lee
+  if (type === 'typeTopSeller') {
+    get_type = await BusinessSetting.findOne({
+      key: 'typeTopSeller'
     })
   }
 
-  if(type==='typeTopSeller'){
-    get_type = await BusinessSetting.findOne({
-     key:'typeTopSeller'
-   })
- }
+  // types product
+  if (type === 'typeFeatureProduct') {
+    // 1. Fetch all types
+    const allTypes = await Type.find();
 
- if(type==='typeFeatureProduct'){
-  get_type = await BusinessSetting.findOne({
-   key:'typeFeatureProduct'
- })
-}
+    // 2. Get all matching products (that belong to any of the types)
+    const allTypeIds = allTypes.map(type => type._id);
 
-if(type==='ja'){
-  const products = await Product.find({ ja:true })
-    .sort({ "reviews.length": -1 })
-    .limit(100)
-     .select('-description -additionalInformation -reviews -imageURLs  ');
-  return products;
-}
-if(type==='lee'){
-  const products = await Product.find({ lee:true })
-    .sort({ "reviews.length": -1 })
-    .limit(100)
-     .select('-description -additionalInformation -reviews -imageURLs  ');
-  return products;
-}
+    const allProducts = await Product.find({ 'type.id': { $in: allTypeIds } })
+      .select('-description -additionalInformation -reviews -imageURLs')
+      .populate('type.id'); // populate type info from Type model
+
+    // 3. Combine and return
+    return allProducts;
+
+  }
+
+  // Shop Trending Collection section
+  if (type === 'ja') {
+    const products = await Product.find({ ja: true })
+      .sort({ "reviews.length": -1 })
+      .limit(100)
+      .select('-description -additionalInformation -reviews -imageURLs  ');
+    return products;
+  }
 
 
-  if(get_type){
-    const products = await Product.find({ "type.id": new mongoose.Types.ObjectId(get_type.value.id)  })
-    .sort({ "reviews.length": -1 })
-    .limit(8)
-     .select('-description -additionalInformation -reviews -imageURLs  ');
-  return products;
-  }else{
+  if (type === 'lee') {
+    const products = await Product.find({ lee: true })
+      .sort({ "reviews.length": -1 })
+      .limit(100)
+      .select('-description -additionalInformation -reviews -imageURLs  ');
+    return products;
+  }
+
+
+  if (get_type) {
+    const products = await Product.find({ "brand.id": new mongoose.Types.ObjectId(get_type.value.id) })
+      .sort({ "reviews.length": -1 })
+      .limit(15)
+      .select('-description -additionalInformation -reviews -imageURLs  ');
+    return products;
+  } else {
     return []
   }
 
@@ -172,7 +188,7 @@ exports.getRelatedProductService = async (productId) => {
   const currentProduct = await Product.findById(productId);
 
   const relatedProducts = await Product.find({
-    "category.name": currentProduct.category.name,
+    "category.name": currentProduct?.category?.name,
     _id: { $ne: productId }, // Exclude the current product ID
   });
   return relatedProducts;
@@ -180,14 +196,18 @@ exports.getRelatedProductService = async (productId) => {
 
 // update a product
 exports.updateProductService = async (id, currProduct) => {
-  // console.log('currProduct',currProduct)
+  console.log('currProduct',currProduct.type)
   const product = await Product.findById(id);
   if (product) {
     product.title = currProduct.title;
     product.brand.name = currProduct.brand.name;
     product.brand.id = currProduct.brand.id;
-    product.type.name = currProduct.type.name;
-    product.type.id = currProduct.type.id;
+    console.log(product?.type)
+    if ( currProduct?.type) {
+      product.type.name = currProduct.type.name;
+      product.type.id = currProduct.type.id;
+    }
+
     product.category.name = currProduct.category.name;
     product.category.id = currProduct.category.id;
     product.sku = currProduct.sku;
