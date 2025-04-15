@@ -122,11 +122,38 @@ exports.getPopularProductServiceByType = async (type) => {
 
   // Shop Trending Collection section
   if (type === 'ja') {
-    const products = await Product.find({ ja: true })
-      .sort({ "reviews.length": -1 })
-      .limit(100)
-      .select('-description -additionalInformation -reviews -imageURLs  ');
-    return products;
+    const limit  = await BusinessSetting.findOne({
+      key: 'limit'
+    })
+
+    let products = await Product.find({ ja: true })
+    .sort({ "reviews.length": -1 })
+    .limit(Number(limit.value))
+    .select('-description -additionalInformation -reviews -imageURLs');
+
+  if (products.length === 0) {
+    const fifteenDaysAgo = new Date();
+    fifteenDaysAgo.setDate(fifteenDaysAgo.getDate() - 15);
+
+    // First: try to get products from the last 15 days
+     products = await Product.find({
+      createdAt: { $gte: fifteenDaysAgo }
+    })
+      .sort({ createdAt: -1 }) // Most recent first
+      .limit(Number(limit.value))
+      .select('-description -additionalInformation -reviews -imageURLs');
+
+    // If no products found, fallback to latest products
+    if (products.length === 0) {
+      products = await Product.find({})
+        .sort({ createdAt: -1 }) // Most recent first
+        .limit(Number(limit.value))
+        .select('-description -additionalInformation -reviews -imageURLs');
+    }
+  }
+
+  return products;
+
   }
 
 
