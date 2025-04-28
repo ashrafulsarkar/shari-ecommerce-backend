@@ -18,11 +18,11 @@ const productsSchema = mongoose.Schema({
   },
   description: {
     type: String,
-    required: true
+    required: false
   },
   img:{
     type: String,
-    required: true,
+    required: false,
     validate: [validator.isURL, "Please provide valid url(s)"]
   },
   imageURLs: [{
@@ -47,13 +47,13 @@ const productsSchema = mongoose.Schema({
   }],
   parent:{
     type:String,
-    required:true,
+    required:false,
     trim:true,
   },
   children:{
     type:String,
-    required:true,
-    trim:true,
+    required:false,
+    trim:false,
   },
   price: {
     type: Number,
@@ -72,12 +72,12 @@ const productsSchema = mongoose.Schema({
   brand: {
     name: {
       type: String,
-      required: true,
+      required: false,
     },
     id: {
       type: ObjectId,
       ref: "Brand",
-      required: true,
+      required: false,
     }
   },
   type:{
@@ -94,12 +94,12 @@ const productsSchema = mongoose.Schema({
   category: {
     name: {
       type: String,
-      required: true,
+      required: false,
     },
     id: {
       type: ObjectId,
       ref: "Category",
-      required: true,
+      required: false,
     }
   },
   sku: {
