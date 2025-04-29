@@ -5,33 +5,34 @@ const Products = require("../model/Products");
 
 
 // add product
-exports.addProduct = async (req, res,next) => {
-  console.log('product--->',req.body);
+exports.addProduct = async (req, res, next) => {
+  // console.log('product--->', req.body);
   try {
-    // const firstItem = {
-    //   color: {
-    //     name:'',
-    //     clrCode:''
-    //   },
-    //   img: req.body.img,
-    // };
-    // const imageURLs = [firstItem, ...req.body.imageURLs];
+    // Transform image URLs into objects with required structure
+    const imageURLs = req.body.imageURLs.map(url => ({
+      img: url,
+      color: {
+        name: '',
+        clrCode: ''
+      }
+    }));
+
     const result = await productServices.createProductService({
       ...req.body,
-      // imageURLs: imageURLs,
+      imageURLs
     });
 
-    console.log('product-result',result)
+    // console.log('product-result', result);
 
     res.status(200).json({
-      success:true,
-      status: "success",
+      success: true,
+      status: "success",  
       message: "Product created successfully!",
       data: result,
     });
   } catch (error) {
     console.log(error);
-    next(error)
+    next(error);
   }
 };
 

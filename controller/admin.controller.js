@@ -82,7 +82,7 @@ const forgetPassword = async (req, res,next) => {
         to: `${email}`,
         subject: "Password Reset",
         html: `<h2>Hello ${email}</h2>
-        <p>A request has been received to change the password for your <strong>Shofy</strong> account </p>
+        <p>A request has been received to change the password for your <strong>Jo Admin</strong> account </p>
 
         <p>This link will expire in <strong> 10 minute</strong>.</p>
 
@@ -90,10 +90,10 @@ const forgetPassword = async (req, res,next) => {
 
         <a href=${secret.admin_url}/forget-password/${token} style="background:#0989FF;color:white;border:1px solid #0989FF; padding: 10px 15px; border-radius: 4px; text-decoration:none;">Reset Password</a>
 
-        <p style="margin-top: 35px;">If you did not initiate this request, please contact us immediately at support@shofy.com</p>
+        <p style="margin-top: 35px;">If you did not initiate this request, please contact us immediately at Jo Admin</p>
 
         <p style="margin-bottom:0px;">Thank you</p>
-        <strong>Shofy Team</strong>
+        <strong>Jo Team</strong>
         `,
       };
       admin.confirmationToken = token;
@@ -121,7 +121,7 @@ const confirmAdminForgetPass = async (req, res,next) => {
       });
     }
 
-    const expired = new Date() > new Date(user.confirmationTokenExpires);
+    const expired = new Date() > new Date(admin.confirmationTokenExpires);
 
     if (expired) {
       return res.status(401).json({
@@ -250,7 +250,6 @@ const updateStaff = async (req, res) => {
       admin.name = req.body.name;
       admin.email = req.body.email;
       admin.phone = req.body.phone;
-      admin.role = req.body.role;
       admin.joiningData = req.body.joiningDate;
       admin.image = req.body.image;
       admin.password =
@@ -264,7 +263,7 @@ const updateStaff = async (req, res) => {
         _id: updatedAdmin._id,
         name: updatedAdmin.name,
         email: updatedAdmin.email,
-        role: updatedAdmin.role,
+        role: 'Admin',
         image: updatedAdmin.image,
         phone: updatedAdmin.phone,
       });

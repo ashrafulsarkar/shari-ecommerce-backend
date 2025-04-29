@@ -7,23 +7,55 @@ const { default: mongoose } = require("mongoose");
 
 // create product service
 exports.createProductService = async (data) => {
+  // Ensure brand data is properly structured
+  if (data.brand) {
+    const brand = await Brand.findById(data.brand);
+    if (brand) {
+      data.brand = {
+        name: brand.name,
+        id: brand._id
+      };
+    }
+  }
+
+  // Ensure type data is properly structured
+  if (data.type) {
+    const type = await Type.findById(data.type);
+    if (type) {
+      data.type = {
+        name: type.name,
+        id: type._id
+      };
+    }
+  }
+
   const product = await Product.create(data);
-  const { _id: productId, brand, type, category } = product;
-  //update Brand
-  await Brand.updateOne(
-    { _id: brand.id },
-    { $push: { products: productId } }
-  );
-  //update type
-  await Type.updateOne(
-    { _id: type.id },
-    { $push: { products: productId } }
-  );
-  //Category Brand
-  await Category.updateOne(
-    { _id: category.id },
-    { $push: { products: productId } }
-  );
+  const { _id: productId, brand, category, type } = product;
+
+  // Update brand with product reference
+  if (brand?.id) {
+    await Brand.updateOne(
+      { _id: brand.id },
+      { $push: { products: productId } }
+    );
+  }
+
+  // Update type with product reference
+  if (type?.id) {
+    await Type.updateOne(
+      { _id: type.id },
+      { $push: { products: productId } }
+    );
+  }
+
+  // Update category with product reference
+  if (category?.id) {
+    await Category.updateOne(
+      { _id: category.id },
+      { $push: { products: productId } }
+    );
+  }
+
   return product;
 };
 
@@ -221,45 +253,65 @@ exports.getRelatedProductService = async (productId) => {
   return relatedProducts;
 };
 
-// update a product
+// update products
 exports.updateProductService = async (id, currProduct) => {
-  console.log('currProduct',currProduct.type)
-  const product = await Product.findById(id);
-  if (product) {
-    product.title = currProduct.title;
-    product.brand.name = currProduct.brand.name;
-    product.brand.id = currProduct.brand.id;
-    console.log(product?.type)
-    if ( currProduct?.type) {
-      product.type.name = currProduct.type.name;
-      product.type.id = currProduct.type.id;
-    }
+  const product = await Product.findOne({ _id: id });
 
-    product.category.name = currProduct.category.name;
-    product.category.id = currProduct.category.id;
-    product.sku = currProduct.sku;
-    product.img = currProduct.img;
-    product.slug = currProduct.slug;
-    product.sizes = currProduct.sizes;
-    product.imageURLs = currProduct.imageURLs;
-    product.tags = currProduct.tags;
-    product.parent = currProduct.parent;
-    product.children = currProduct.children;
-    product.price = currProduct.price;
-    product.discount = currProduct.discount;
-    product.quantity = currProduct.quantity;
-    product.status = currProduct.status;
-    product.productType = currProduct.productType;
-    product.description = currProduct.description;
-    product.additionalInformation = currProduct.additionalInformation;
-
-    await product.save();
+  if (!product) {
+    throw new Error('Product not found');
   }
 
+  // Handle brand update
+  if (currProduct.brand) {
+    const brand = await Brand.findById(currProduct.brand.id || currProduct.brand);
+    if (brand) {
+      product.brand = {
+        name: brand.name,
+        id: brand._id
+      };
+    }
+  }
+
+  // Handle type update
+  if (currProduct.type) {
+    const type = await Type.findById(currProduct.type.id || currProduct.type);
+    if (type) {
+      product.type = {
+        name: type.name,
+        id: type._id
+      };
+    }
+  }
+
+  // Handle category update
+  if (currProduct.category) {
+    const category = await Category.findById(currProduct.category.id || currProduct.category);
+    if (category) {
+      product.category = {
+        name: category.parent, // Using parent as name since that's how categories are structured
+        id: category._id
+      };
+    }
+  }
+
+  // Update other fields
+  product.title = currProduct.title;
+  product.sku = currProduct.sku;
+  product.img = currProduct.img;
+  product.slug = currProduct.slug;
+  product.imageURLs = currProduct.imageURLs;
+  product.tags = currProduct.tags;
+  product.parent = currProduct.parent;
+  product.children = currProduct.children;
+  product.price = currProduct.price;
+  product.discount = currProduct.discount;
+  product.quantity = currProduct.quantity;
+  product.status = currProduct.status;
+  product.description = currProduct.description;
+
+  await product.save();
   return product;
-};
-
-
+}
 
 // get Reviews Products
 exports.getReviewsProducts = async () => {
