@@ -249,6 +249,7 @@ const updateStaff = async (req, res) => {
     if (admin) {
       admin.name = req.body.name;
       admin.email = req.body.email;
+      admin.role = req.body.role;
       admin.phone = req.body.phone;
       admin.joiningData = req.body.joiningDate;
       admin.image = req.body.image;
@@ -263,7 +264,7 @@ const updateStaff = async (req, res) => {
         _id: updatedAdmin._id,
         name: updatedAdmin.name,
         email: updatedAdmin.email,
-        role: 'Admin',
+        role: updatedAdmin.role,
         image: updatedAdmin.image,
         phone: updatedAdmin.phone,
       });

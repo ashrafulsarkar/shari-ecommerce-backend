@@ -26,34 +26,16 @@ const productsSchema = mongoose.Schema({
     validate: [validator.isURL, "Please provide valid url(s)"]
   },
   imageURLs: [{
-    color:{
-      name:{
-        type: String,
-        required: false,
-        trim: true,
-      },
-      clrCode:{
-        type: String,
-        required: false,
-        trim: true,
-      }
-    },
     img:{
       type: String,
       required: false,
       validate: [validator.isURL, "Please provide valid url(s)"]
     },
-    sizes:[String]
   }],
   parent:{
     type:String,
     required:false,
     trim:true,
-  },
-  children:{
-    type:String,
-    required:false,
-    trim:false,
   },
   price: {
     type: Number,
@@ -101,10 +83,6 @@ const productsSchema = mongoose.Schema({
       ref: "Category",
       required: false,
     }
-  },
-  sku: {
-    type: String,
-    required: false,
   },
   count: {
     type: String,
