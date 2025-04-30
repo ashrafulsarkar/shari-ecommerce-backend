@@ -44,8 +44,9 @@ const loginAdmin = async (req, res,next) => {
   console.log(req.body)
   try {
     const admin = await Admin.findOne({ email: req.body.email });
-    console.log(admin)
+
     if (admin && bcrypt.compareSync(req.body.password, admin.password)) {
+      console.log(admin)
       const token = generateToken(admin);
       res.send({
         token,
@@ -62,6 +63,7 @@ const loginAdmin = async (req, res,next) => {
       });
     }
   } catch (err) {
+    clg(err)
     next(err)
   }
 };
