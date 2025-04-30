@@ -22,7 +22,7 @@ exports.addProduct = async (req, res, next) => {
 
     res.status(200).json({
       success: true,
-      status: "success",  
+      status: "success",
       message: "Product created successfully!",
       data: result,
     });
@@ -188,19 +188,11 @@ exports.deleteProduct = async (req, res,next) => {
 };
 exports.product_ja_lee = async (req, res,next) => {
   try {
-
     const product = await Products.findById(req.params.id)
-    console.log(req.body)
-    if(req.body.type==='ja'){
-      product.ja=req.body.status
-    }
-    if(req.body.type==='lee'){
-      product.lee=req.body.status
-    }
+    product.ja=req.body.ja
     product.save();
-
     res.status(200).json({
-      message:'Product brand update successfully'
+      message:'Product Tranding update successfully'
     })
   } catch (error) {
     next(error)

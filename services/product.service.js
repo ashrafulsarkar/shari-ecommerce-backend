@@ -264,12 +264,13 @@ exports.getRelatedProductService = async (productId) => {
 	return relatedProducts;
 };
 
+
 // update products
 exports.updateProductService = async (id, currProduct) => {
 	const product = await Product.findOne({ _id: id });
 
 	// console.log('current----> ',currProduct);
-	
+
 
 	if (!product) {
 		throw new Error('Product not found');
