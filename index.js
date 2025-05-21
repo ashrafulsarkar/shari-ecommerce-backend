@@ -32,7 +32,8 @@ const albumRoutes = require("./routes/album.routes");
 const businessSettingRoutes = require("./routes/businessSetting.routes");
 const commentRoutes = require("./routes/Comment.routes");
 const SSLCommerzeRoutes = require("./routes/SSLCommerze.routes");
-
+const subscribeRoutes = require("./routes/subscribe.routes"); // adjust path if needed
+const contactRoutes = require('./routes/contactRoutes.routes');
 // middleware
 app.use(timeout('300s'));
 app.use(cors());
@@ -47,7 +48,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // connect database
 connectDB();
-
+app.use('/api/contact', contactRoutes);
+app.use("/api/subscribe", subscribeRoutes);
 app.use("/api/user", userRoutes);
 app.use("/api/category", categoryRoutes);
 app.use("/api/brand", brandRoutes);
