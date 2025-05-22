@@ -28,7 +28,7 @@ router.post("/", async (req, res) => {
 router.get("/", async (req, res) => {
   try {
     const subscriptions = await Subscribe.find().sort({ createdAt: -1 });
-    res.status(200).json({ data: subscriptions });
+    res.status(200).json(subscriptions);
   } catch (err) {
     res.status(500).json({ message: "Server error", error: err.message });
   }
