@@ -313,6 +313,7 @@ exports.updateProductService = async (id, currProduct) => {
 	product.title = currProduct.title;
 	product.img = currProduct.img;
 	product.slug = currProduct.slug;
+	product.additionalInformation = currProduct.additionalInformation;
 	product.imageURLs = currProduct.imageURLs.map(url => ({ img: url }));
 	product.tags = currProduct.tags;
 	product.parent = currProduct.parent;

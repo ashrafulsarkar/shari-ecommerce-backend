@@ -17,6 +17,9 @@ const postSchema = new Schema(
     description: {
       type: String,
     },
+    long_description: {
+      type: String,
+    },
     category: {
       name: {
         type: String,

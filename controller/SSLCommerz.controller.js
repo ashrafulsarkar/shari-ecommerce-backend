@@ -4,7 +4,7 @@ const { getSetting } = require("../lib/helper");
 const { updateorder, getOrderDetails } = require("../helper/order");
 
 let settings = {
-  isSandboxMode: true, //false if live version
+  isSandboxMode: false, //false if live version
   store_id: process.env.STROE_ID_SSLCOMMERZE,
   store_passwd: process.env.STORE_PASSWORD_SSLCOMMERZE,
 };
@@ -62,6 +62,7 @@ exports.paySSLCommerzeOrder = async (req, res, next) => {
     sslcommerz
       .init_transaction(post_body)
       .then((response) => {
+        console.log("response",response)
         res.status(200).json({
           code: 200,
           status: "success",
@@ -70,6 +71,7 @@ exports.paySSLCommerzeOrder = async (req, res, next) => {
         });
       })
       .catch((error) => {
+        console.log("error",error)
         res.status(200).json({
           code: 200,
           status: "success",
