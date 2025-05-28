@@ -85,12 +85,28 @@ exports.addAllProductService = async (data) => {
 			$push: { products: product._id },
 		});
 	}
+	const productsWithDiscount = products.map(product => ({
+		...product.toObject(),
+		price: product.discount > 0
+			? product.price - product.discount
+			: product.price
+	}));
+
+	return productsWithDiscount;
 	return products;
 };
 
 // get product data
 exports.getAllProductsService = async () => {
 	const products = await Product.find({}).populate("reviews");
+	const productsWithDiscount = products.map(product => ({
+		...product.toObject(),
+		price: product.discount > 0
+			? product.price - product.discount
+			: product.price
+	}));
+
+	return productsWithDiscount;
 	return products;
 };
 
@@ -117,6 +133,15 @@ exports.getProductTypeService = async (req) => {
 	} else {
 		products = await Product.find({ productType: type }).populate("reviews");
 	}
+	const productsWithDiscount = products.map(product => ({
+		...product.toObject(),
+		price: product.discount > 0
+			? product.price - product.discount
+			: product.price
+	}));
+
+	return productsWithDiscount;
+
 	return products;
 };
 
@@ -126,13 +151,22 @@ exports.getOfferTimerProductService = async (query) => {
 		productType: query,
 		"offerDate.endDate": { $gt: new Date() },
 	}).populate("reviews");
+
+	const productsWithDiscount = products.map(product => ({
+		...product.toObject(),
+		price: product.discount > 0
+			? product.price - product.discount
+			: product.price
+	}));
+
+	return productsWithDiscount;
+
 	return products;
 };
 
 // get popular product service by type
 exports.getPopularProductServiceByType = async (type) => {
 	let get_type;
-	console.log(type)
 	// jo
 	if (type === 'popular') {
 		get_type = await BusinessSetting.findOne({
@@ -159,6 +193,15 @@ exports.getPopularProductServiceByType = async (type) => {
 			.populate('type.id'); // populate type info from Type model
 
 		// 3. Combine and return
+		// 3. Calculate discounted price
+	const productsWithDiscount = allProducts.map(product => ({
+		...product.toObject(),
+		price: product.discount > 0
+			? product.price - product.discount
+			: product.price
+	}));
+
+	return productsWithDiscount;
 		return allProducts;
 
 	}
@@ -195,6 +238,15 @@ exports.getPopularProductServiceByType = async (type) => {
 			}
 		}
 
+			const productsWithDiscount = products.map(product => ({
+		...product.toObject(),
+		price: product.discount > 0
+			? product.price - product.discount
+			: product.price
+	}));
+
+	return productsWithDiscount;
+
 		return products;
 
 	}
@@ -218,7 +270,7 @@ exports.getPopularProductServiceByType = async (type) => {
 	const discountedProducts = products.map(product => {
 		const hasDiscount = product.discount > 0;
 		return {
-			...product,
+			...product.toObject(),
 			price: hasDiscount ? product.price - product.discount : product.price
 		};
 	});
@@ -233,6 +285,14 @@ exports.getPopularProductServiceByType = async (type) => {
 			.sort({ "reviews.length": -1 })
 			.limit(15)
 			.select('-description -additionalInformation -reviews -imageURLs  ');
+			const productsWithDiscount = products.map(product => ({
+		...product.toObject(),
+		price: product.discount > 0
+			? product.price - product.discount
+			: product.price
+	}));
+
+	return productsWithDiscount;
 		return products;
 	} else {
 		return []
@@ -255,6 +315,9 @@ exports.getTopRatedProductService = async () => {
 		return {
 			...product.toObject(),
 			rating: averageRating,
+			price: product.discount > 0
+				? product.price - product.discount
+				: product.price
 		};
 	});
 
@@ -269,6 +332,7 @@ exports.getProductService = async (id) => {
 		path: "reviews",
 		populate: { path: "userId", select: "name email imageURL" },
 	});
+
 	return product;
 };
 
@@ -280,6 +344,14 @@ exports.getRelatedProductService = async (productId) => {
 		"category.name": currentProduct?.category?.name,
 		_id: { $ne: productId }, // Exclude the current product ID
 	});
+	const productsWithDiscount = relatedProducts.map(product => ({
+		...product.toObject(),
+		price: product.discount > 0
+			? product.price - product.discount
+			: product.price
+	}));
+
+	return productsWithDiscount;
 	return relatedProducts;
 };
 
@@ -359,12 +431,28 @@ exports.getReviewsProducts = async () => {
 
 	const products = result.filter(p => p.reviews.length > 0)
 
+	const productsWithDiscount = products.map(product => ({
+		...product.toObject(),
+		price: product.discount > 0
+			? product.price - product.discount
+			: product.price
+	}));
+
+	return productsWithDiscount;
 	return products;
 };
 
 // get Reviews Products
 exports.getStockOutProducts = async () => {
 	const result = await Product.find({ status: "out-of-stock" }).sort({ createdAt: -1 })
+	const productsWithDiscount = result.map(product => ({
+		...product.toObject(),
+		price: product.discount > 0
+			? product.price - product.discount
+			: product.price
+	}));
+
+	return productsWithDiscount;
 	return result;
 };
 

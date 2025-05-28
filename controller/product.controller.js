@@ -117,6 +117,8 @@ module.exports.getTopRatedProducts = async (req,res,next) => {
 exports.getSingleProduct = async (req,res,next) => {
   try {
     const product = await productServices.getProductService(req.params.id)
+    const hasDiscount = product.discount > 0;
+    product.price = hasDiscount ? product.price - product.discount : product.price
     res.json(product)
   } catch (error) {
     next(error)
