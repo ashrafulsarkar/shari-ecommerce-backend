@@ -23,7 +23,7 @@ router.get('/', async (req, res) => {
 });
 router.get('/slider_data', async (req, res) => {
   try {
-    const items = await Slider.find({ type: "slider" });
+    const items = await Slider.find({ type: req.query.type });
     res.json(items);
   } catch (error) {
     res.status(500).json({ error: error.message });
