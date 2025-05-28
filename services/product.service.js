@@ -132,7 +132,7 @@ exports.getOfferTimerProductService = async (query) => {
 // get popular product service by type
 exports.getPopularProductServiceByType = async (type) => {
 	let get_type;
-
+	console.log(type)
 	// jo
 	if (type === 'popular') {
 		get_type = await BusinessSetting.findOne({
@@ -207,6 +207,25 @@ exports.getPopularProductServiceByType = async (type) => {
 			.select('-description -additionalInformation -reviews -imageURLs  ');
 		return products;
 	}
+
+	if (type === 'discount') {
+	const products = await Product.find({ lee: true })
+		.sort({ "reviews.length": -1 })
+		.limit(100)
+		.select('-description -additionalInformation -reviews -imageURLs')
+		.lean(); // returns plain JS objects, allowing modifications
+
+	const discountedProducts = products.map(product => {
+		const hasDiscount = product.discount > 0;
+		return {
+			...product,
+			price: hasDiscount ? product.price - product.discount : product.price
+		};
+	});
+
+	return discountedProducts;
+}
+
 
 
 	if (get_type) {

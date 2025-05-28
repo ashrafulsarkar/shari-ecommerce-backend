@@ -189,7 +189,13 @@ exports.deleteProduct = async (req, res,next) => {
 exports.product_ja_lee = async (req, res,next) => {
   try {
     const product = await Products.findById(req.params.id)
-    product.ja=req.body.ja
+    if(req.body.type=='ja'){
+
+      product.ja=req.body.ja
+    }
+    if(req.body.type=='lee'){
+      product.lee=req.body.lee
+    }
     product.save();
     res.status(200).json({
       message:'Product Tranding update successfully'

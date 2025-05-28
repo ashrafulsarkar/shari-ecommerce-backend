@@ -35,6 +35,7 @@ const SSLCommerzeRoutes = require("./routes/SSLCommerze.routes");
 const subscribeRoutes = require("./routes/subscribe.routes"); // adjust path if needed
 const contactRoutes = require('./routes/contactRoutes.routes');
 const sliderRoutes = require('./routes/slider.routes');
+const areaRoutes = require('./routes/area.routes');
 // middleware
 app.use(timeout('300s'));
 app.use(cors());
@@ -49,6 +50,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // connect database
 connectDB();
+app.use('/api/area', areaRoutes);
 app.use('/api/slider', sliderRoutes);
 app.use('/api/contact', contactRoutes);
 app.use("/api/subscribe", subscribeRoutes);

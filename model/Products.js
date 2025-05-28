@@ -35,7 +35,6 @@ const productsSchema = mongoose.Schema({
   parent:{
     type:String,
     required:false,
-    trim:true,
   },
   price: {
     type: Number,
