@@ -270,7 +270,7 @@ exports.getPopularProductServiceByType = async (type) => {
 	const discountedProducts = products.map(product => {
 		const hasDiscount = product.discount > 0;
 		return {
-			...product.toObject(),
+			...product,
 			price: hasDiscount ? product.price - product.discount : product.price
 		};
 	});
