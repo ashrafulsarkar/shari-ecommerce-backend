@@ -402,6 +402,7 @@ exports.updateProductService = async (id, currProduct) => {
 
 	// Update other fields
 	product.title = currProduct.title;
+	product.brand_type = currProduct.brand_type || 'jo';
 	product.img = currProduct.img;
 	product.slug = currProduct.slug;
 	product.additionalInformation = currProduct.additionalInformation;

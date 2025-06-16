@@ -103,6 +103,10 @@ const productsSchema = mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  brand_type: {
+    type: String,
+    default: 'jo',
+  },
   ja: {
     type: Boolean,
     default: false,
