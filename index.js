@@ -78,6 +78,8 @@ app.use("/api/business_setting", businessSettingRoutes);
 app.use("/api/comment", commentRoutes);
 app.use("/api/sslcommerze", SSLCommerzeRoutes);
 
+// image manage ment
+
 
 app.listen(PORT, () => console.log(`server running on port ${PORT}`));
 
