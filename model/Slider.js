@@ -21,6 +21,14 @@ const sliderSchema = mongoose.Schema({
       type: String,
       required: false,
   },
+  mobileImage:{
+      type: String,
+      required: false,
+  },
+  tabletImage:{
+      type: String,
+      required: false,
+  },
   type: {
     type: String,
     enum: ["slider", "jo",'lee'],
