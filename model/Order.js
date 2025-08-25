@@ -45,6 +45,15 @@ const orderSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
+    areaCharge: {
+      type: Number,
+      required: false,
+      default: 0,
+    },
+    shippingArea: {
+      type: String,
+      required: false,
+    },
     discount: {
       type: Number,
       required: true,

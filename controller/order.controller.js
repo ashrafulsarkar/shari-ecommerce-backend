@@ -1,6 +1,9 @@
+const { sendEmail } = require("../config/email");
 const { secret } = require("../config/secret");
+const { generateInvoiceHTML } = require("../lib/generateInvoiceHTML");
 const stripe = require("stripe")(secret.stripe_key);
 const Order = require("../model/Order");
+const User = require("../model/User");
 
 // create-payment-intent
 exports.paymentIntent = async (req, res, next) => {
@@ -25,7 +28,55 @@ exports.paymentIntent = async (req, res, next) => {
 // addOrder
 exports.addOrder = async (req, res, next) => {
   try {
+    if (req.body.user === 'tempUser') {
+
+      const userExit = await User.findOne({
+        $or: [
+          { email: req.body.email },
+          { phone: req.body.contact }
+        ]
+      });
+      if (userExit) {
+        req.body.user = userExit._id;
+        req.body.name = req.body.name || userExit?.name;
+      } else {
+        const user = await User.create(
+          {
+            name: req.body.name,
+            email: req.body.email,
+            password: req.body.contact,
+            contactNumber: req.body.contactNumber,
+            phone: req.body.contact,
+            status: 'active',
+          });
+        if (user) {
+          req.body.user = user._id;
+          req.body.name = user?.name;
+        }
+      }
+
+    }
     const orderItems = await Order.create(req.body);
+
+
+    // Extract product images from the cart items
+    const productImages = orderItems.cart
+      .map(item => item.img) // Note: using 'img' property as in your template
+      .filter(Boolean); // Remove any null/undefined values
+
+ const emailBody = {
+      from: `"JO-BD store " <${process.env.EMAIL_USER}>`,
+      to: orderItems.email,
+      subject: `Order Invoice - ${orderItems.invoice}`,
+      html: generateInvoiceHTML(orderItems),
+      imageAttachments: {
+        logo: process.env.COMPANY_LOGO_URL,
+        products: productImages
+      }
+    };
+
+    sendEmail(emailBody, res, "Order placed and invoice emailed!");
+
 
     res.status(200).json({
       success: true,
@@ -89,7 +140,7 @@ exports.updateOrderStatus = async (req, res) => {
 
 
 // report generate
-exports.orderReport = async(req,res,next)=>{
+exports.orderReport = async (req, res, next) => {
 
   try {
     let { startDate, endDate } = req.query;

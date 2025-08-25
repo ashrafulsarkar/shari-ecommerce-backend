@@ -11,7 +11,16 @@ exports.signup = async (req, res,next) => {
   try {
     const user = await User.findOne({ email: req.body.email });
     if (user) {
-      res.send({ status: "failed", message: "Email already exists" });
+      // return res.send({ [status: "failed",path:"email", message: "Email already exists"] });
+      const data_array = [
+        {
+          path: "email",
+          message: "Email already exists",
+        },
+      ]
+      return res.status(400).json(
+        { errorMessages: data_array, status: "failed" }
+      );
     } else {
       const saved_user = await User.create(req.body);
       const token = saved_user.generateConfirmationToken();
@@ -25,21 +34,25 @@ exports.signup = async (req, res,next) => {
         subject: "Verify Your Email",
         html: `<h2>Hello ${req.body.name}</h2>
         <p>Verify your email address to complete the signup and login into your <strong>shofy</strong> account.</p>
-  
+
           <p>This link will expire in <strong> 10 minute</strong>.</p>
-  
+
           <p style="margin-bottom:20px;">Click this link for active your account</p>
-  
+
           <a href="${secret.client_url}/email-verify/${token}" style="background:#0989FF;color:white;border:1px solid #0989FF; padding: 10px 15px; border-radius: 4px; text-decoration:none;">Verify Account</a>
-  
+
           <p style="margin-top: 35px;">If you did not initiate this request, please contact us immediately at support@shofy.com</p>
-  
+
           <p style="margin-bottom:0px;">Thank you</p>
           <strong>shofy Team</strong>
            `,
       };
       const message = "Please check your email to verify!";
-      sendEmail(mailData, res, message);
+      // sendEmail(mailData, res, message);
+      res.status(201).json({
+        status: "success",
+        message:"User created successfully",
+      });
     }
   } catch (error) {
     next(error)
@@ -277,7 +290,7 @@ exports.updateUser = async (req, res,next) => {
       user.email = req.body.email;
       user.phone = req.body.phone;
       user.address = req.body.address;
-      user.bio = req.body.bio; 
+      user.bio = req.body.bio;
       const updatedUser = await user.save();
       const token = generateToken(updatedUser);
       res.status(200).json({

@@ -32,7 +32,10 @@ const albumRoutes = require("./routes/album.routes");
 const businessSettingRoutes = require("./routes/businessSetting.routes");
 const commentRoutes = require("./routes/Comment.routes");
 const SSLCommerzeRoutes = require("./routes/SSLCommerze.routes");
-
+const subscribeRoutes = require("./routes/subscribe.routes"); // adjust path if needed
+const contactRoutes = require('./routes/contactRoutes.routes');
+const sliderRoutes = require('./routes/slider.routes');
+const areaRoutes = require('./routes/area.routes');
 // middleware
 app.use(timeout('300s'));
 app.use(cors());
@@ -47,7 +50,10 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // connect database
 connectDB();
-
+app.use('/api/area', areaRoutes);
+app.use('/api/slider', sliderRoutes);
+app.use('/api/contact', contactRoutes);
+app.use("/api/subscribe", subscribeRoutes);
 app.use("/api/user", userRoutes);
 app.use("/api/category", categoryRoutes);
 app.use("/api/brand", brandRoutes);
@@ -71,6 +77,8 @@ app.use("/api/album", albumRoutes);
 app.use("/api/business_setting", businessSettingRoutes);
 app.use("/api/comment", commentRoutes);
 app.use("/api/sslcommerze", SSLCommerzeRoutes);
+
+// image manage ment
 
 
 app.listen(PORT, () => console.log(`server running on port ${PORT}`));

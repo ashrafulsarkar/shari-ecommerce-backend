@@ -83,6 +83,8 @@ router.get("/front_end/shipping_info", async (req, res) => {
       inside_dhaka_type:"inside_dhaka_type",
       outside_dhaka:await getSetting('outside_dhaka'),
       outside_dhaka_type:"outside_dhaka_type",
+      dhaka:await getSetting('dhaka'),
+      dhaka_type:"dhaka_type",
     }
     res.status(200).json(settings);
   } catch (error) {

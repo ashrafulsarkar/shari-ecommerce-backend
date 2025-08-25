@@ -35,7 +35,6 @@ const productsSchema = mongoose.Schema({
   parent:{
     type:String,
     required:false,
-    trim:true,
   },
   price: {
     type: Number,
@@ -103,6 +102,10 @@ const productsSchema = mongoose.Schema({
   featured: {
     type: Boolean,
     default: false,
+  },
+  brand_type: {
+    type: String,
+    default: 'jo',
   },
   ja: {
     type: Boolean,

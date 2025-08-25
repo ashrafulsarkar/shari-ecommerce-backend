@@ -60,27 +60,91 @@ const addMultipleImageCloudinary = async (req, res) => {
   }
 };
 
-// cloudinary ImageDelete
-const cloudinaryDeleteController = async (req, res) => {
+const mediaMultipleImageCloudinary = async (req, res) => {
   try {
-    const { folder_name, id } = req.query;
-    const public_id = `${folder_name}/${id}`;
-    const result = await cloudinaryServices.cloudinaryImageDelete(public_id);
+    const files = req.files;
+
+    if (!files || files.length === 0) {
+      return res.status(400).json({ success: false, message: "No files uploaded" });
+    }
+
+    const uploadResults = [];
+
+    for (const file of files) {
+      if (!file.buffer) continue; // skip empty files
+
+      const result = await cloudinaryServices.cloudinaryImageUpload(file.buffer); // ✅ buffer, not path
+
+      uploadResults.push({
+        secure_url: result.secure_url,
+        public_id: result.public_id,
+        asset_id: result.asset_id,
+      });
+    }
+
     res.status(200).json({
       success: true,
-      message: "delete image successfully",
-      data: result,
+      message: "Images uploaded successfully",
+      images: uploadResults,
     });
   } catch (err) {
-    res.status(500).send({
+    console.error("Error uploading to Cloudinary:", err);
+    res.status(500).json({
       success: false,
-      message: "Failed to delete image",
+      message: "Failed to upload images",
+      error: err.message,
     });
   }
 };
+
+
+
+// cloudinary ImageDelete
+// const cloudinaryDeleteController = async (req, res) => {
+//   try {
+//     const { folder_name, id } = req.query;
+//     const public_id = `${folder_name}/${id}`;
+//     const result = await cloudinaryServices.cloudinaryImageDelete(public_id);
+//     res.status(200).json({
+//       success: true,
+//       message: "delete image successfully",
+//       data: result,
+//     });
+//   } catch (err) {
+//     res.status(500).send({
+//       success: false,
+//       message: "Failed to delete image",
+//     });
+//   }
+// };
+const cloudinaryDeleteController = async (req, res) => {
+  try {
+    const { public_id } = req.body; // get public_id directly from request body
+    if (!public_id) {
+      return res.status(400).json({ success: false, message: "public_id is required" });
+    }
+
+    const result = await cloudinaryServices.cloudinaryImageDelete(public_id);
+
+    res.status(200).json({
+      success: true,
+      message: "Image deleted successfully",
+      data: result,
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({
+      success: false,
+      message: "Failed to delete image",
+      error: err.message,
+    });
+  }
+};
+
 
 exports.cloudinaryController = {
   cloudinaryDeleteController,
   saveImageCloudinary,
   addMultipleImageCloudinary,
+  mediaMultipleImageCloudinary
 };
